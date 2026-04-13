@@ -1,0 +1,152 @@
+//AddBack   RemoveFront
+const int START_SIZE = 10000;
+const int MAX_SIZE = 100000;
+const int STEP = 10000;
+const int MEASUREMENTS = 1000; 
+int main() {
+
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<> dist(1, 1000000);
+
+
+    cout << fixed << setprecision(0);
+
+
+    cout << "Rozmiar(N);AddBack(ns);RemoveFront(ns)\n";
+
+    for (int N = START_SIZE; N <= MAX_SIZE; N += STEP) {
+        
+
+        vector<DynamicArray> arrays(MEASUREMENTS);
+        
+        // Wypełniamy każdą z kopii tak, aby miała rozmiar N
+        for (int i = 0; i < MEASUREMENTS; ++i) {
+            for (int j = 0; j < N; ++j) {
+                arrays[i].addBack(dist(gen)); 
+            }
+        }
+
+
+        auto start_add_back = high_resolution_clock::now();
+        
+        for (int i = 0; i < MEASUREMENTS; ++i) {
+
+            arrays[i].addBack(dist(gen)); 
+        }
+        
+        auto end_add_back = high_resolution_clock::now();
+        double avg_add_back = (double)duration_cast<nanoseconds>(end_add_back - start_add_back).count() / MEASUREMENTS;
+
+ 
+        auto start_rem_front = high_resolution_clock::now();
+        
+        for (int i = 0; i < MEASUREMENTS; ++i) {
+ 
+            arrays[i].removeFront(); 
+        }
+        
+        auto end_rem_front = high_resolution_clock::now();
+        double avg_rem_front = (double)duration_cast<nanoseconds>(end_rem_front - start_rem_front).count() / MEASUREMENTS;
+
+        cout << N << ";" << avg_add_back << ";" << avg_rem_front << "\n";
+    }
+
+    return 0;
+}
+//RemoveBack   RemoveAt
+
+int main() {
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<> dist(1, 1000000);
+
+
+    cout << fixed << setprecision(0);
+
+
+    cout << "Rozmiar(N);RemoveBack(ns);RemoveAt(ns)\n";
+
+    for (int N = START_SIZE; N <= MAX_SIZE; N += STEP) {
+
+        vector<DynamicArray> arrays(MEASUREMENTS);
+        
+        for (int i = 0; i < MEASUREMENTS; ++i) {
+            for (int j = 0; j < N; ++j) {
+                arrays[i].addBack(dist(gen)); 
+            }
+        }
+
+
+        auto start_rem_back = high_resolution_clock::now();
+        
+        for (int i = 0; i < MEASUREMENTS; ++i) {
+            arrays[i].removeBack(); 
+        }
+        
+        auto end_rem_back = high_resolution_clock::now();
+        double avg_rem_back = (double)duration_cast<nanoseconds>(end_rem_back - start_rem_back).count() / MEASUREMENTS;
+
+        
+        uniform_int_distribution<> index_dist(0, N - 2);
+        int random_index = index_dist(gen);
+
+        auto start_rem_at = high_resolution_clock::now();
+        
+        for (int i = 0; i < MEASUREMENTS; ++i) {
+            arrays[i].removeAt(random_index); 
+        }
+        
+        auto end_rem_at = high_resolution_clock::now();
+        double avg_rem_at = (double)duration_cast<nanoseconds>(end_rem_at - start_rem_at).count() / MEASUREMENTS;
+
+
+        cout << N << ";" << avg_rem_back << ";" << avg_rem_at << "\n";
+    }
+
+    return 0;
+}
+
+// AddAt
+int main() {
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<> dist(1, 1000000);
+
+
+    cout << fixed << setprecision(0);
+
+
+    cout << "Rozmiar(N);AddAt(ns)\n";
+
+    for (int N = START_SIZE; N <= MAX_SIZE; N += STEP) {
+        
+ 
+        vector<DynamicArray> arrays(MEASUREMENTS);
+        
+        for (int i = 0; i < MEASUREMENTS; ++i) {
+            for (int j = 0; j < N; ++j) {
+                arrays[i].addBack(dist(gen)); 
+            }
+        }
+
+        uniform_int_distribution<> index_dist(0, N);
+        int random_index = index_dist(gen);
+        int random_value = dist(gen);
+
+        auto start_add_at = high_resolution_clock::now();
+        
+        for (int i = 0; i < MEASUREMENTS; ++i) {
+            arrays[i].addAt(random_index, random_value); 
+        }
+        
+        auto end_add_at = high_resolution_clock::now();
+        double avg_add_at = (double)duration_cast<nanoseconds>(end_add_at - start_add_at).count() / MEASUREMENTS;
+
+
+        cout << N << ";" << avg_add_at << "\n";
+    }
+
+    return 0;
+}
+
